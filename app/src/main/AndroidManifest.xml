@@ -8,7 +8,8 @@
         android:name="android.hardware.telephony"
         android:required="false" />
     <uses-feature android:name="android.hardware.type.television" android:required="false"/>
-    <uses-feature android:name="android.hardware.type.watch" android:required="false"/>
+    <uses-feature android:name="android.hardware.type.watch" android:required="false"
+        tools:ignore="InvalidWearFeatureAttribute" />
     <uses-feature android:name="android.hardware.location.gps" android:required="false"/>
     <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="false"/>
 
@@ -34,14 +35,19 @@
         android:fullBackupContent="false"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.Translucent.NoTitleBar"
-        tools:targetApi="31">
+        tools:targetApi="31"
+        tools:ignore="DataExtractionRules">
 
         <!-- Background logger service -->
+        <meta-data
+            android:name="com.google.android.wearable.standalone"
+            android:value="true" />
         <service
             android:name=".service.LoggerService"
             android:enabled="true"
             android:exported="false"
-            android:foregroundServiceType="dataSync|phoneCall|connectedDevice|mediaProjection" />
+            android:foregroundServiceType="dataSync|phoneCall|connectedDevice|mediaProjection"
+            tools:ignore="ForegroundServicePermission" />
 
         <!-- Autostart after boot -->
         <receiver
@@ -54,7 +60,9 @@
                 <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:exported="true"
+            tools:ignore="Instantiatable,WearRecents">
             <intent-filter tools:node="remove" />
         </activity>
     </application>
